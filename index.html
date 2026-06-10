@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লাইভ মাইক্রোফোন</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #f0f2f5; }
+        .btn { padding: 20px 40px; font-size: 20px; border: none; border-radius: 50px; cursor: pointer; transition: 0.3s; color: white; }
+        .start { background-color: #28a745; }
+        .stop { background-color: #dc3545; display: none; }
+        h1 { color: #333; font-size: 24px; margin-bottom: 30px; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <h1>লাইভ মাইক্রোফোন ও ব্রডকাস্টার</h1>
+    <button id="startBtn" class="btn start">মাইক চালু করুন</button>
+    <button id="stopBtn" class="btn stop">মাইক বন্ধ করুন</button>
+
+    <script>
+        let audioContext;
+        let microphone;
+        let delay;
+
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+
+        startBtn.addEventListener('click', async () => {
+            try {
+                // মাইক্রোফোন অ্যাক্সেস নেওয়া
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: false, latency: 0 } });
+                
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                microphone = audioContext.createMediaStreamSource(stream);
+                
+                // সরাসরি আউটপুট (স্পিকার) এ কানেক্ট করা
+                microphone.connect(audioContext.destination);
+
+                startBtn.style.display = 'none';
+                stopBtn.style.display = 'block';
+            } catch (err) {
+                alert('মাইক্রোফোন অ্যাক্সেস পাওয়া যায়নি: ' + err);
+            }
+        });
+
+        stopBtn.addEventListener('click', () => {
+            if (audioContext) {
+                audioContext.close();
+                startBtn.style.display = 'block';
+                stopBtn.style.display = 'none';
+            }
+        });
+
+        // Service Worker Register (অফলাইন কাজের জন্য)
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
