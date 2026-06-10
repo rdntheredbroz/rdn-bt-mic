@@ -1,0 +1,15 @@
+{
+  "name": "rdn bt mic",
+  "short_name": "RdnMic",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#28a745",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1086/1086741.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+  ]
